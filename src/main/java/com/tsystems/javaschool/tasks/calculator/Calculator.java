@@ -3,6 +3,10 @@ package com.tsystems.javaschool.tasks.calculator;
 import java.util.ArrayList;
 
 public class Calculator {
+    public static void main(String[] args) {
+        Calculator c=new Calculator();
+        System.out.println( c.evaluate("2+3*4"));
+    }
 
     /**
      * Evaluate statement represented as string.
@@ -19,9 +23,9 @@ public class Calculator {
             {
                 return (int)i+"";
             }
-            //Костыль номер два
+
             if((i+"").equals("Infinity")) throw new Exception();
-            //Конец костыля
+
             return i + "";
         } catch (Exception e) {
             return null;
@@ -35,7 +39,6 @@ public class Calculator {
 
         return count(a[0], a[1]);
 
-        //counting result
     }
 
     private static ArrayList[] split(String s) throws Exception {
@@ -44,13 +47,11 @@ public class Calculator {
         StringBuilder buffer = new StringBuilder();
         int count = 0;
         for (char i : s.toCharArray()) {
-            //Начало костыля
             if (s.startsWith("-"))
             {
                 buffer.append(i);
                 continue;
             }
-            //Конец костыля
             if (count == 0) {
                 //    +_*/
                 if (i == ')') throw new Exception();
@@ -87,13 +88,22 @@ public class Calculator {
     private static double count(ArrayList<String> numbers, ArrayList<Character> operators) throws Exception{
         int i;
         while ((i = operators.indexOf('*')) > 0 || (i = operators.indexOf('/')) > 0) {
-            i=operators.indexOf('*')<operators.indexOf('/')?operators.indexOf('*'):operators.indexOf('/');
+            if(operators.indexOf('*')==-1)
+            {
+                i=operators.indexOf('/');
+            } else if(operators.indexOf('/')==-1)
+            {
+                i=operators.indexOf('*');
+            }
+                else {
+                i = operators.indexOf('*') > operators.indexOf('/') ? operators.indexOf('/') : operators.indexOf('*');
+            }
             numbers.set(i,lilcalculator(numbers.get(i)+"",numbers.get(i+1)+"",operators.get(i))+"");
             numbers.remove(i+1);
             operators.remove(i);
         }
         i=0;
-        while (numbers.size()!=1)
+        while (numbers.size()>1)
         {
             numbers.set(i,lilcalculator(numbers.get(i)+"",numbers.get(i+1)+"",operators.get(i))+"");
             numbers.remove(i+1);
