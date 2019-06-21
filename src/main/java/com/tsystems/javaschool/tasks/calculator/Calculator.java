@@ -9,6 +9,7 @@ public class Calculator {
     }
 
     /**
+     *
      * Evaluate statement represented as string.
      *
      * @param statement mathematical statement containing digits, '.' (dot) as decimal mark,
