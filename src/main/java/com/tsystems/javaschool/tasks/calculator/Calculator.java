@@ -26,8 +26,8 @@ public class Calculator {
             }
 
             if((i+"").equals("Infinity")) throw new Exception();
-
-            return i + "";
+            
+            return Math.round(i * 10000.0) / 10000.0+"";
         } catch (Exception e) {
             return null;
         }
