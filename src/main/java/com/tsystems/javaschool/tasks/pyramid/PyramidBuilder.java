@@ -16,34 +16,29 @@ public class PyramidBuilder {
     public int[][] buildPyramid(List<Integer> inputNumbers) {
         // Height & possibility
         // переделать на решение уравнения!!!!
-        try {
-            if (inputNumbers.size() == 0) throw new Exception();
+        if (inputNumbers.contains(null)) throw new CannotBuildPyramidException();
+        int height = getHeight(inputNumbers.size());
 
-            int height = 1,
-                    size = inputNumbers.size();
+        //строим пирамиду
+        Collections.sort(inputNumbers);
 
-            while (size > 0) {
-                size -= height;
-                if (size < 0) throw new CannotBuildPyramidException();
+        int[][] result = new int[height][2 * height - 1];
 
-                height++;
-
+        int index = 0;
+        for(int i = 0; i < height; i++) {
+            for(int j = height - i - 1; j < height + i; j += 2) {
+                result[i][j] = inputNumbers.get(index++);
             }
-
-            //строим пирамиду
-            Collections.sort(inputNumbers);
-
-            int[][] result = new int[--height][2 * height - 1];
-
-            int index = 0;
-            for (int i = 0; i < height; i++) {
-                for (int j = height - i - 1; j < height + i; j += 2) {
-                    result[i][j] = inputNumbers.get(index++);
-                }
-            }
-            return result;
-        } catch (Exception e) {
-            throw new CannotBuildPyramidException();
         }
+        return result;
+    }
+
+    private static int getHeight(int size) {
+        if (size == 0) return 0;
+
+        double res = (Math.sqrt(1 + 8 * size) - 1) / 2;
+        if (res - (int) res != 0.0) throw new CannotBuildPyramidException();
+
+        return (int) res;
     }
 }
