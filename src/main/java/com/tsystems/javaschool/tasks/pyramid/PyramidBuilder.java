@@ -11,15 +11,12 @@ public class PyramidBuilder {
      *
      * @param inputNumbers to be used in the pyramid
      * @return 2d array with pyramid inside
-     * @throws {@link CannotBuildPyramidException} if the pyramid cannot be build with given input
+     * @throws CannotBuildPyramidException if the pyramid cannot be build with given input
      */
     public int[][] buildPyramid(List<Integer> inputNumbers) {
-        // Height & possibility
-        // переделать на решение уравнения!!!!
         if (inputNumbers.contains(null)) throw new CannotBuildPyramidException();
         int height = getHeight(inputNumbers.size());
 
-        //строим пирамиду
         Collections.sort(inputNumbers);
 
         int[][] result = new int[height][2 * height - 1];
