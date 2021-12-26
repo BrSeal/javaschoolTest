@@ -1,5 +1,7 @@
 package com.tsystems.javaschool.tasks.calculator;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -28,7 +30,8 @@ public class Calculator {
 
     public String evaluate(String statement) {
         try {
-            validateStatement(statement);
+            if (statement == null || !statement.matches(VALIDATION_PATTERN)) throw new IllegalArgumentException();
+
             List<String> split = splitStatement(statement);
 
             if (split.size() == 0) return null;
@@ -40,17 +43,12 @@ public class Calculator {
 
             for(String s : split) {
                 result = calc(s, numbers, signs, result);
-
             }
 
             return df.format(result);
         } catch (Exception ex) {
             return null;
         }
-    }
-
-    private void validateStatement(String statement) {
-        if (statement != null && !statement.matches(VALIDATION_PATTERN)) throw new IllegalArgumentException();
     }
 
     private List<String> splitStatement(String statement) {
@@ -66,14 +64,22 @@ public class Calculator {
     }
 
     private Double calc(String maybeNumber, Stack<Double> numbers, Stack<String> signs, Double result) {
+        throw new NotImplementedException();
+    }
 
-        if (isNumber(maybeNumber)) {
-            double number = Double.parseDouble(maybeNumber);
-            numbers.push(number);
-        } else {
-            signs.push(maybeNumber);
+    private double calculate(String operation, double a, double b) {
+        switch (operation) {
+            case "+":
+                return a + b;
+            case "-":
+                return a - b;
+            case "*":
+                return a * b;
+            case "/":
+                return a / b;
+            default:
+                throw new IllegalArgumentException();
         }
-        return result + 1;
     }
 
     private boolean isNumber(String maybeNumber) {
