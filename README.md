@@ -12,5 +12,5 @@ The exam includes 3 tasks to be done: [Calculator](/tasks/Calculator.md), [Pyram
 ### Result ###
 
 * Author name : Aleksandr Melnikov
-* Codeship : * Codeship :[![Codeship Status for BrSeal/javaschool](https://app.codeship.com/projects/5d6d1e50-762f-0137-ce5f-5668775b815a/status?branch=master)](https://app.codeship.com/projects/349827)
+* Codeship : [![Codeship Status for BrSeal/javaschoolTest](https://app.codeship.com/projects/d9e383b5-78d8-4193-a451-2f135a446e3a/status?branch=master)](https://app.codeship.com/projects/454798)
 
