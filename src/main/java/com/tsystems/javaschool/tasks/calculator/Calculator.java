@@ -1,24 +1,21 @@
 package com.tsystems.javaschool.tasks.calculator;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Calculator {
     private static final int FRACTION_DIGITS = 4;
-    private static final String VALIDATION_PATTERN = "[\\d.\\+\\-\\/\\(\\*\\)]+";
     private static final String NUMBER_PATTERN = "\\d+\\.?\\d*";
-    private static final String SPLIT_PATTERN = NUMBER_PATTERN + "|\\+|\\-|\\/|\\(|\\*|\\)";
+    private static final String SPLIT_PATTERN = NUMBER_PATTERN + "|\\+|-|/|\\(|\\*|\\)";
 
     private final Map<String, Integer> priority;
-
-    DecimalFormat df;
+    NumberFormat df;
 
     public Calculator() {
-        df = new DecimalFormat();
+        df = DecimalFormat.getInstance(Locale.ENGLISH);
         df.setMaximumFractionDigits(FRACTION_DIGITS);
 
         priority = new HashMap<>();
@@ -30,22 +27,10 @@ public class Calculator {
 
     public String evaluate(String statement) {
         try {
-            if (statement == null || !statement.matches(VALIDATION_PATTERN)) throw new IllegalArgumentException();
-
             List<String> split = splitStatement(statement);
-
-            if (split.size() == 0) return null;
-
-            Stack<Double> numbers = new Stack<>();
-            Stack<String> signs = new Stack<>();
-            Double result = 0.0;
-
-
-            for(String s : split) {
-                result = calc(s, numbers, signs, result);
-            }
-
+            double result = calc(split);
             return df.format(result);
+
         } catch (Exception ex) {
             return null;
         }
@@ -63,27 +48,61 @@ public class Calculator {
         return split;
     }
 
-    private Double calc(String maybeNumber, Stack<Double> numbers, Stack<String> signs, Double result) {
-        throw new NotImplementedException();
+    private boolean isNumber(String s) {
+        return s.matches(NUMBER_PATTERN);
     }
 
     private double calculate(String operation, double a, double b) {
         switch (operation) {
             case "+":
-                return a + b;
+                return b + a;
             case "-":
-                return a - b;
+                return b - a;
             case "*":
-                return a * b;
+                return b * a;
             case "/":
-                return a / b;
+                if (a == 0) throw new IllegalArgumentException("Division by zero!");
+                return b / a;
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Unsupported operation [" + operation + "]");
         }
     }
 
-    private boolean isNumber(String maybeNumber) {
-        return maybeNumber.matches(NUMBER_PATTERN);
-    }
+    private double calc(List<String> strings) {
+        Stack<Double> numbers = new Stack<>();
+        Stack<String> signs = new Stack<>();
+        String topSign;
 
+        for(String expr : strings) {
+            if (expr.equals(")")) {
+                topSign = signs.pop();
+                while (!topSign.equals("(")) {
+                    numbers.push(calculate(topSign, numbers.pop(), numbers.pop()));
+                    topSign = signs.pop();
+                }
+            } else if (isNumber(expr)) {
+                numbers.push(Double.parseDouble(expr));
+            } else if (expr.equals("(")) {
+                signs.push(expr);
+            } else {
+                if (!signs.empty()) {
+                    topSign = signs.peek();
+                    while (!signs.empty() && !topSign.equals("(") && priority.get(expr) <= priority.get(topSign)) {
+                        numbers.push(calculate(signs.pop(), numbers.pop(), numbers.pop()));
+                        if (!signs.empty()) {
+                            topSign = signs.peek();
+                        }
+                    }
+                }
+                signs.push(expr);
+            }
+        }
+
+        while (!signs.empty()) {
+            numbers.push(calculate(signs.pop(), numbers.pop(), numbers.pop()));
+        }
+
+        if (numbers.size() == 1) return numbers.pop();
+        throw new IllegalArgumentException("Can't provide calculation");
+    }
 }
